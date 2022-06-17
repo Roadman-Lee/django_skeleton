@@ -1,11 +1,12 @@
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
+
 
 # custom user model 사용 시 UserManager 클래스와 create_user, create_superuser 함수가 정의되어 있어야 함
 class UserManager(BaseUserManager):
     def create_user(self, username, password=None):
         if not username:
-            raise ValueError('Users must have an username')
+            raise ValueError("Users must have an username")
         user = self.model(
             username=username,
         )
@@ -15,10 +16,7 @@ class UserManager(BaseUserManager):
 
     # python manage.py createsuperuser 사용 시 해당 함수가 사용됨
     def create_superuser(self, username, password):
-        user = self.create_user(
-            username=username,
-            password=password
-        )
+        user = self.create_user(username=username, password=password)
         user.is_admin = True
         user.save(using=self._db)
         return user
@@ -39,9 +37,9 @@ class User(AbstractBaseUser):
 
     # id로 사용 할 필드 지정.
     # 로그인 시 USERNAME_FIELD에 설정 된 필드와 password가 사용된다.
-    USERNAME_FIELD = 'username'
+    USERNAME_FIELD = "username"
 
-    # user를 생성할 때 입력받은 필드 지정
+    # createsuperuser() 실행할 때 입력받은 필드 지정
     REQUIRED_FIELDS = []
 
     objects = UserManager()  # custom user 생성 시 필요
